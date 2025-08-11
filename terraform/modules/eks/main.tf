@@ -49,7 +49,7 @@ resource "aws_iam_role" "fargate" {
       Action = "sts:AssumeRole"
       Effect = "Allow"
       Principal = {
-        Service = "eks-fargate.amazonaws.com"
+        Service = "eks-fargate-pods.amazonaws.com"
       }
     }]
   })
@@ -71,7 +71,7 @@ resource "aws_eks_fargate_profile" "web" {
   fargate_profile_name = "${var.cluster_name}-web-fargate-profile"
   pod_execution_role_arn = aws_iam_role.fargate.arn
 
-  subnets = var.subnet_ids
+  subnet_ids = var.subnet_ids
 
   selector {
     namespace = "frontend"
