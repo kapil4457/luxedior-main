@@ -28,13 +28,19 @@ jobs:
           echo "SANITY_PROJECT_ID=${{ secrets.SANITY_PROJECT_ID }}" >> .env
           cat .env
 
-      - name: build and push luxedior-frontend
+      - name: Build and push luxedior-frontend
         id: build-push
-        run: |
-          cd frontend
-          DOCKER_BUILDKIT=1 docker build -t kapil4457/luxedior-frontend:${{ github.sha }} .
-          docker push kapil4457/luxedior-frontend:${{ github.sha }}
-          docker push kapil4457/luxedior-frontend:latest
+        uses: docker/build-push-action@v6
+        with:
+          context: frontend
+          file: frontend/Dockerfile
+          tags: |
+            kapil4457/luxedior-frontend:${{ github.sha }},
+            kapil4457/luxedior-frontend:latest
+          build-args: |
+            DOCKER_BUILDKIT=1
+          secrets: |
+            dotenv=frontend/.env
       - name: Get frontend image digest
         id: get-digest
         run: |
