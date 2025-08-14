@@ -4,6 +4,7 @@ WORKDIR /frontend
 COPY package*.json ./
 RUN npm install
 COPY . .
+RUN ls
 # RUN --mount=type=secret,id=dotenv \
 #     sh -euxc '\
 #       export $(grep -Ev "^(#|$)" /run/secrets/dotenv | xargs)  \
