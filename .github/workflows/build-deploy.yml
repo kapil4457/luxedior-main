@@ -30,17 +30,13 @@ jobs:
 
       - name: Build and push luxedior-frontend
         id: build-push
-        uses: docker/build-push-action@v6
-        with:
-          context: frontend
-          file: frontend/Dockerfile
-          tags: |
-            kapil4457/luxedior-frontend:${{ github.sha }},
-            kapil4457/luxedior-frontend:latest
-          build-args: |
-            DOCKER_BUILDKIT=1
-          secrets: |
-            dotenv=frontend/.env
+        run: |
+          cd frontend
+          ls -la
+          cat .env
+          docker buildx build --secret id=dotenv,src=frontend/.env --tag kapil4457/luxedior-frontend:${{ github.sha }} --tag kapil4457/luxedior-frontend:latest --push .
+          docker build -t kapil4457/luxedior-frontend:${{ github.sha }} .
+          
       - name: Get frontend image digest
         id: get-digest
         run: |
