@@ -4,13 +4,14 @@ WORKDIR /frontend
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN ls
+RUN ls -la
 # RUN --mount=type=secret,id=dotenv \
 #     sh -euxc '\
 #       export $(grep -Ev "^(#|$)" /run/secrets/dotenv | xargs)  \
 #       && npm run build \
 #     '
-
+RUN 'cat /run/secrets/dotenv'
+ENV DOCKER_BUILDKIT=1
 RUN --mount=type=secret,id=dotenv \
 sh -euxc '\
   echo "Printing .env file contents:" && cat /run/secrets/dotenv && \
