@@ -26,12 +26,14 @@ jobs:
           echo "SANITY_API_VERSION=${{ secrets.SANITY_API_VERSION }}" >> .env
           echo "SANITY_PROJECT_ENV=${{ secrets.SANITY_PROJECT_ENV }}" >> .env
           echo "SANITY_PROJECT_ID=${{ secrets.SANITY_PROJECT_ID }}" >> .env
+          cat .env
+          cp .env /app/.env
 
       - name: build and push luxedior-frontend
         id: build-push
         run: |
           cd frontend
-          docker build -t kapil4457/luxedior-frontend:${{ github.sha }} .
+          DOCKER_BUILDKIT=1 docker build -t kapil4457/luxedior-frontend:${{ github.sha }} .
           docker push kapil4457/luxedior-frontend:${{ github.sha }}
           docker push kapil4457/luxedior-frontend:latest
       - name: Get frontend image digest
