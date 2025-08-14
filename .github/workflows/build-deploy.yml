@@ -27,7 +27,6 @@ jobs:
           echo "SANITY_PROJECT_ENV=${{ secrets.SANITY_PROJECT_ENV }}" >> .env
           echo "SANITY_PROJECT_ID=${{ secrets.SANITY_PROJECT_ID }}" >> .env
           cat .env
-          cp .env /app/.env
 
       - name: build and push luxedior-frontend
         id: build-push
