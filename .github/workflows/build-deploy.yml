@@ -19,6 +19,14 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Create .env file dynamically
+        run: |
+          cd frontend
+          echo "SANITY_API_TOKEN=${{ secrets.SANITY_API_TOKEN }}" >> .env
+          echo "SANITY_API_VERSION=${{ secrets.SANITY_API_VERSION }}" >> .env
+          echo "SANITY_PROJECT_ENV=${{ secrets.SANITY_PROJECT_ENV }}" >> .env
+          echo "SANITY_PROJECT_ID=${{ secrets.SANITY_PROJECT_ID }}" >> .env
+
       - name: build and push luxedior-frontend
         id: build-push
         run: |
@@ -49,6 +57,7 @@ jobs:
           cd sanity-studio
           docker build -t kapil4457/luxedior-sanity-studio:${{ github.sha }} .
           docker push kapil4457/luxedior-sanity-studio:${{ github.sha }}
+          docker tag kapil4457/luxedior-sanity-studio:${{ github.sha }} kapil4457/luxedior-sanity-studio:latest
           docker push kapil4457/luxedior-sanity-studio:latest
           
       - name: Get sanity-studio image digest

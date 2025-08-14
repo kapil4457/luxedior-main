@@ -10,7 +10,6 @@ RUN --mount=type=secret,id=dotenv \
       && npm run build \
     '
 
-
 FROM node:20-alpine AS app
 WORKDIR /frontend
 COPY --from=build /frontend .
