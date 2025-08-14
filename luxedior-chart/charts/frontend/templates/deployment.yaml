@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "frontend.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{ include "frontend.selectorLabels" . | nindent 6 }}
+  template:
+    spec:
+      containers:
+        - name: frontend
+          metadata:
+            labels:
+              {{ include "frontend.selectorLabels" . | nindent 8 }}
+          image: {{- if .Values.image.digest -}}
+                  {{ .Values.image.repository }}@sha256:{{ .Values.image.digest }}
+                {{- else -}}
+                  {{ .Values.image.repository }}:{{ .Values.image.tag }}
+                {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}

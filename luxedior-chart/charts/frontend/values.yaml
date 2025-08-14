@@ -1,0 +1,10 @@
+image:
+  repository: kapil4457/luxedior-frontend
+  digest: ""
+  tag: ""
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000

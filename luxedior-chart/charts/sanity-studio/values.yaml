@@ -1,0 +1,10 @@
+image:
+  repository: kapil4457/luxedior-sanity-studio
+  digest: ""
+  tag: ""
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3333

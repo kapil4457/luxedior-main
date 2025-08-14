@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sanity-studio.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{ include "sanity-studio.selectorLabels" . | nindent 6 }}
+  template:
+    spec:
+      containers:
+        - name: sanity-studio
+          metadata:
+            labels:
+              {{ include "sanity-studio.selectorLabels" . | nindent 8 }}
+          image: {{- if .Values.image.digest -}}
+                  {{ .Values.image.repository }}@sha256:{{ .Values.image.digest }}
+                {{- else -}}
+                  {{ .Values.image.repository }}:{{ .Values.image.tag }}
+                {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
