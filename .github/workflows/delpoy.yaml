@@ -1,0 +1,38 @@
+name: Deploy
+on:
+workflow_call:
+  inputs:
+    environment:
+      required: true
+      type: string
+
+
+permissions:
+  contents: write
+
+jobs:
+  update-k8s-manifest:
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Update k8s manifest
+        run: |
+          cd luxedior-chart
+          
+          yq e -i '.frontend.image.digest = "'${{ needs.build-and-push-frontend.outputs.frontend_digest }}'"' values-${{ inputs.environment }}.yaml
+          yq e -i '.studio.image.digest = "'${{ needs.build-and-push-sanity-studio.outputs.sanity_studio_digest }}'"' values-${{ inputs.environment }}.yaml
+
+
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+
+          git add values-${{ inputs.environment }}.yaml
+          git commit --allow-empty -m "Update Kubernetes manifest with new image digests"
+          git push origin HEAD:${{ github.ref }}
+

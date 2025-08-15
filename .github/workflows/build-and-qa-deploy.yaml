@@ -1,4 +1,4 @@
-name: Build and  Deploy
+name: Build Image and Deploy to QA
 on:
   pull_request:
     types: [closed]
@@ -6,9 +6,6 @@ on:
       - Feature_*
     paths-ignore:
       - 'luxedior-chart/*'
-
-permissions:
-  contents: write
 
 jobs:
   build-and-push-frontend:
@@ -51,6 +48,9 @@ jobs:
   
   
   
+  
+  
+  
   build-and-push-sanity-studio:
     runs-on: ubuntu-latest
     outputs:
@@ -79,31 +79,9 @@ jobs:
         id: get-digest
         run: |
           echo "digest=${{  steps.build-sanity.outputs.digest }}" >> $GITHUB_OUTPUT
-
-  update-k8s-manifest:
-    runs-on: ubuntu-latest
+  
+  deploy-to-qa:
     needs: [build-and-push-frontend, build-and-push-sanity-studio]
-    # needs: [build-and-push-frontend]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-          
-      - name: Update k8s manifest
-        run: |
-          cd luxedior-chart
-          echo "# Before update" && cat values.yaml
-
-          yq e -i '.frontend.image.digest = "'${{ needs.build-and-push-frontend.outputs.frontend_digest }}'"' values.yaml
-          yq e -i '.studio.image.digest = "'${{ needs.build-and-push-sanity-studio.outputs.sanity_studio_digest }}'"' values.yaml
-
-          echo "# After update" && cat values.yaml
-          
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-
-          git add values.yaml
-          git commit --allow-empty -m "Update Kubernetes manifest with new image digests"
-          git push origin HEAD:${{ github.ref }}
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      environment: qa
