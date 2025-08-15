@@ -79,8 +79,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        
       - name: Update k8s manifest
         run: |
+          ls -R .
           cd luxedior-chart
           sed -i "s|kapil4457/luxedior-frontend:.*|kapil4457/luxedior-frontend:${{ needs.build-and-push-frontend.outputs.frontend_digest }}|g" values.yaml
           sed -i "s|kapil4457/luxedior-sanity-studio:.*|kapil4457/luxedior-sanity-studio:${{ needs.build-and-push-sanity-studio.outputs.sanity_studio_digest }}|g" values.yaml
