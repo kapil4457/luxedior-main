@@ -1,4 +1,4 @@
-name: Build Image and Deploy to QA
+name: Build Image
 on:
   pull_request:
     types: [closed]
@@ -6,10 +6,6 @@ on:
       - Feature_*
     paths-ignore:
       - 'luxedior-chart/*'
-
-
-permissions:
-  contents: write
 
 jobs:
   build-and-push-frontend:
@@ -50,11 +46,6 @@ jobs:
           echo "digest=${{ steps.build-frontend.outputs.digest }}" >> $GITHUB_OUTPUT
   
   
-  
-  
-  
-  
-  
   build-and-push-sanity-studio:
     runs-on: ubuntu-latest
     outputs:
@@ -83,9 +74,3 @@ jobs:
         id: get-digest
         run: |
           echo "digest=${{  steps.build-sanity.outputs.digest }}" >> $GITHUB_OUTPUT
-  
-  deploy-to-qa:
-    needs: [build-and-push-frontend, build-and-push-sanity-studio]
-    uses: ./.github/workflows/deploy.yaml
-    with:
-      environment: qa

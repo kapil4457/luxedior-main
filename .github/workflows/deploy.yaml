@@ -1,11 +1,24 @@
 name: Deploy Workflow
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       environment:
+        description: 'Select the deployment environment'
+        type: choice
+        options:
+          - qa
+          - uat
+          - production
+        required: true
+        default: qa
+      frontend_digest:
+        description: 'Frontend image digest'
         required: true
         type: string
-
+      sanity_studio_digest:
+        description: 'Sanity Studio image digest'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -24,8 +37,8 @@ jobs:
         run: |
           cd luxedior-chart
           
-          yq e -i '.frontend.image.digest = "'${{ needs.build-and-push-frontend.outputs.frontend_digest }}'"' values-${{ inputs.environment }}.yaml
-          yq e -i '.studio.image.digest = "'${{ needs.build-and-push-sanity-studio.outputs.sanity_studio_digest }}'"' values-${{ inputs.environment }}.yaml
+          yq e -i '.frontend.image.digest = "'${{ inputs.frontend_digest }}'"' values-${{ inputs.environment }}.yaml
+          yq e -i '.studio.image.digest = "'${{ inputs.sanity_studio_digest }}'"' values-${{ inputs.environment }}.yaml
 
 
           git config user.name "GitHub Actions"
