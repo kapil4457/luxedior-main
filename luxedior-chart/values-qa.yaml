@@ -1,0 +1,21 @@
+frontend:
+  enabled: true
+  image:
+    repository: kapil4457/luxedior-frontend
+    digest: ""
+    tag: ""
+  service:
+    type: NodePort
+    port: 80
+    targetPort: 3000
+
+studio:
+  enabled: true
+  image:
+    repository: kapil4457/luxedior-sanity-studio
+    digest: ""
+    tag: ""
+  service:
+    type: NodePort
+    port: 80
+    targetPort: 3333
