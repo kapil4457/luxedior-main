@@ -34,12 +34,6 @@ resource "aws_eks_cluster" "main" {
   ]
 }
 
-
-
-
-
-
-# IAM Role for Fargate Profile
 resource "aws_iam_role" "fargate" {
   name = "${var.cluster_name}-fargate-role"
 
@@ -70,9 +64,12 @@ resource "aws_eks_fargate_profile" "web" {
   cluster_name         = aws_eks_cluster.main.name
   fargate_profile_name = "${var.cluster_name}-web-fargate-profile"
   pod_execution_role_arn = aws_iam_role.fargate.arn
-
   subnet_ids = var.subnet_ids
 
+  selector {
+    namespace = "argocd"
+  }
+  
   selector {
     namespace = "frontend"
     labels = {
@@ -87,6 +84,10 @@ resource "aws_eks_fargate_profile" "web" {
     }
   }
 
+  tags = {
+    Name = "fargate-profile"
+  }
+  
   depends_on = [
     aws_iam_role_policy_attachment.fargate_policy
   ]
