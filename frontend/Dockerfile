@@ -10,6 +10,7 @@ ARG SANITY_API_VERSION
 ARG SANITY_PROJECT_ENV
 
 COPY package*.json ./
+RUN ls -la
 RUN npm install
 COPY . .
 
