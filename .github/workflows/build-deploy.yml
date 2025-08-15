@@ -34,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./frontend
-          file: ./Dockerfile
+          file: Dockerfile
           push: true
           tags: |
             kapil4457/luxedior-frontend:${{ github.sha }}
