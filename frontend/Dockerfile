@@ -2,26 +2,28 @@
 FROM node:20-alpine AS build
 WORKDIR /frontend
 
-# Ensure coreutils (for cat) is installed
 RUN apk add --no-cache coreutils
 
-# Install dependencies
+ARG SANITY_PROJECT_ID
+ARG SANITY_API_TOKEN
+ARG SANITY_API_VERSION
+ARG SANITY_PROJECT_ENV
+
 COPY package*.json ./
 RUN npm install
 COPY . .
 
-# Debug: List files and directories to ensure the context is correct
 RUN ls -la
+RUN SANITY_PROJECT_ID=${SANITY_PROJECT_ID} SANITY_API_TOKEN=${SANITY_API_TOKEN} SANITY_API_VERSION=${SANITY_API_VERSION} SANITY_PROJECT_ENV=${SANITY_PROJECT_ENV} npm run build
 
-# Debug: Print the contents of /run/secrets
-RUN echo "Listing /run/secrets directory:" && ls -la /run/secrets
 
-# Use BuildKit secret mount
-RUN --mount=type=secret,id=dotenv \
-    sh -euxc '\
-      echo "Printing .env file contents:" && cat /run/secrets/dotenv && \
-      export $(grep -Ev "^(#|$)" /run/secrets/dotenv | sed "s/^[ \\t]*//" | xargs) && \
-      npm run build'
+# RUN echo "Listing /run/secrets directory:" && ls -la /run/secrets
+
+# RUN --mount=type=secret,id=dotenv \
+#     sh -euxc '\
+#       echo "Printing .env file contents:" && cat /run/secrets/dotenv && \
+#       export $(grep -Ev "^(#|$)" /run/secrets/dotenv | sed "s/^[ \\t]*//" | xargs) && \
+#       npm run build'
 
 FROM node:20-alpine AS app
 WORKDIR /frontend
