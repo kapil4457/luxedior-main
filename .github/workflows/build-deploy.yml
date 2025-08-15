@@ -88,17 +88,15 @@ jobs:
           
       - name: Update k8s manifest
         run: |
-          ls -R .
           cd luxedior-chart
           sed -i "s|kapil4457/luxedior-frontend:.*|kapil4457/luxedior-frontend:${{ needs.build-and-push-frontend.outputs.frontend_digest }}|g" values.yaml
           sed -i "s|kapil4457/luxedior-sanity-studio:.*|kapil4457/luxedior-sanity-studio:${{ needs.build-and-push-sanity-studio.outputs.sanity_studio_digest }}|g" values.yaml
-
+          cat values.yaml
+          
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
-          
           git add values.yaml
-          git commit -m "Update Kubernetes manifest with new image digests"
+          git commit --allow-empty -m "Update Kubernetes manifest with new image digests"
           git push origin HEAD:${{ github.ref }}
