@@ -35,7 +35,11 @@ jobs:
           cd frontend
           ls -la
           cat .env
-          docker buildx build --build-arg DOCKER_BUILDKIT=1 --secret id=dotenv,src=.env --tag kapil4457/luxedior-frontend:${{ github.sha }} --tag kapil4457/luxedior-frontend:latest --push .
+          docker buildx build \
+            --build-arg DOCKER_BUILDKIT=1 \
+            --secret type=file,id=dotenv,src=.env \
+            --tag kapil4457/luxedior-frontend:${{ github.sha }} \
+            --tag kapil4457/luxedior-frontend:latest --push .
           
       - name: Get frontend image digest
         id: get-digest
