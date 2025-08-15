@@ -1,15 +1,13 @@
 name: Deploy to UAT
 
 on:
-  pull_request:
-    types: [closed]
-    branches:
-      - main
-    paths-ignore:
-      - 'luxedior-chart/*'
+  workflow_dispatch:
+    inputs:
+      environment:
+
 
 jobs:
   deploy:
-    uses: ./.github/workflows/deploy.yml
+    uses: ./.github/workflows/deploy.yaml
     with:
       environment: uat
