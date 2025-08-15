@@ -2,18 +2,17 @@ frontend:
   enabled: true
   image:
     repository: kapil4457/luxedior-frontend
-    digest: ""
+    digest: "sha256:9ef1dd37437c0d5faf1b60aab76e7533b930ab4f486172e2c5e8087a1c699a56"
     tag: ""
   service:
     type: NodePort
     port: 80
     targetPort: 3000
-
 studio:
   enabled: true
   image:
     repository: kapil4457/luxedior-sanity-studio
-    digest: ""
+    digest: "sha256:e834adc611ceb323a743f0d65d88f5ba5087e0a4617f1055fd840c5ad28859ea"
     tag: ""
   service:
     type: NodePort
