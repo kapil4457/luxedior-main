@@ -93,9 +93,12 @@ jobs:
       - name: Update k8s manifest
         run: |
           cd luxedior-chart
-          sed -i "s|kapil4457/luxedior-frontend:.*|kapil4457/luxedior-frontend:${{ needs.build-and-push-frontend.outputs.frontend_digest }}|g" values.yaml
-          sed -i "s|kapil4457/luxedior-sanity-studio:.*|kapil4457/luxedior-sanity-studio:${{ needs.build-and-push-sanity-studio.outputs.sanity_studio_digest }}|g" values.yaml
-          cat values.yaml
+          echo "# Before update" && cat values.yaml
+
+          yq e -i '.frontend.image.digest = "'${{ needs.build-and-push-frontend.outputs.frontend_digest }}'"' values.yaml
+          yq e -i '.studio.image.digest = "'${{ needs.build-and-push-sanity-studio.outputs.sanity_studio_digest }}'"' values.yaml
+
+          echo "# After update" && cat values.yaml
           
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
