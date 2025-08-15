@@ -14,6 +14,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -33,8 +34,8 @@ jobs:
       - name: Build and push luxedior-frontend
         uses: docker/build-push-action@v3
         with:
-          context: ./frontend
-          file: Dockerfile
+          context: .
+          file: /frontend/Dockerfile
           push: true
           tags: |
             kapil4457/luxedior-frontend:${{ github.sha }}
