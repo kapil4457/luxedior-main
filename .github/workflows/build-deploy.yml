@@ -27,15 +27,15 @@ jobs:
           echo "SANITY_PROJECT_ENV=${{ secrets.SANITY_PROJECT_ENV }}" >> .env
           echo "SANITY_PROJECT_ID=${{ secrets.SANITY_PROJECT_ID }}" >> .env
           cat .env
-
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
       - name: Build and push luxedior-frontend
         id: build-push
         run: |
           cd frontend
           ls -la
           cat .env
-          export DOCKER_BUILDKIT=1
-          docker buildx build --secret id=dotenv,src=.env --tag kapil4457/luxedior-frontend:${{ github.sha }} --tag kapil4457/luxedior-frontend:latest --push .
+          docker buildx build --build-arg DOCKER_BUILDKIT=1 --secret id=dotenv,src=.env --tag kapil4457/luxedior-frontend:${{ github.sha }} --tag kapil4457/luxedior-frontend:latest --push .
           
       - name: Get frontend image digest
         id: get-digest
