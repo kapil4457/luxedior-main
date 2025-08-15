@@ -7,6 +7,7 @@ required_providers {
 }
 
 
+
 backend "s3" {
   bucket         = "luxedior-remote-backend-s3-bucket"
   key            = "terraform.tfstate"
@@ -34,6 +35,31 @@ module "vpc" {
 }
 
 
+
+resource "aws_security_group" "fargate_sg" {
+  name        = "fargate-sg"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "fargate-sg"
+  }
+}
+
+
 module "eks" {
   source = "./modules/eks"
 
@@ -41,4 +67,6 @@ module "eks" {
   cluster_version = var.cluster_version
   vpc_id          = module.vpc.vpc_id
   subnet_ids      = module.vpc.private_subnet_ids
+
 }
+
